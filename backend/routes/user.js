@@ -24,12 +24,15 @@ const updateBody = zod.object({
   lastName: zod.string(),
 });
 
-const   router = express.Router();
+const router = express.Router();
 
 router.post("/signup", async function (req, res) {
-  const { success } = signupBody.safeParse(req.body);
+  console.log("request came");
+  console.log(req.body);
+  const parsedBody = signupBody.safeParse(req.body);
+  console.log("parsed Body is =", parsedBody);
 
-  if (!success) {
+  if (!parsedBody.success) {
     return res.status(411).json({ 
       msg: "Invalid input data",
     });
@@ -38,6 +41,8 @@ router.post("/signup", async function (req, res) {
   const existingUser = await User.findOne({
     username: req.body.username,
   });
+
+  console.log("exiting user is", existingUser)
 
   if (existingUser) {
     return res.status(411).json({
